@@ -9,6 +9,7 @@ class Book extends React.Component {
       isFavoriteBook: this.isFavoriteBook(),
       errors: [],
       isNewPhrase: false,
+      isDescriptionVideo: false,
     };
     this.onSourcePhraseSubmit = this.onSourcePhraseSubmit.bind(this);
     this.onTargetPhraseSubmit = this.onTargetPhraseSubmit.bind(this);
@@ -299,6 +300,9 @@ class Book extends React.Component {
   }
 
   renderTruncatedDescription() {
+    if (this.state.book.description.startsWith('https://')) {
+      return <iframe className="iframe" src={this.state.book.description} frameBorder="0" />;
+    }
     if (this.state.book.description.length >= 132) {
       if (this.state.isDescriptionTruncated) {
         return (
