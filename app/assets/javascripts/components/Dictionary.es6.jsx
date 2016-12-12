@@ -194,81 +194,8 @@ class Dictionary extends React.Component {
     }
   }
 
-
-// Video Zone
-
   onToggleInputType() {
     this.setState({ isInputVideo: !this.state.isInputVideo });
-  }
-
-  onCloseVideoComponent() {
-    this.setState({
-      isVideoRecording: false,
-      isInputVideo: false
-    });
-    if (this.state.stream !== '') {
-      this.onStopStream();
-    }
-  }
-
-  onStopRecordingClick() {
-    this.setState({ isVideoRecording: !this.state.isVideoRecording });
-  }
-
-  onStartRecordingClick() {
-    this.setState({ isVideoRecording: !this.state.isVideoRecording });
-  }
-
-  onRenderVideoInput() {
-    if (this.state.isInputVideo) {
-      const video = document.getElementById('camera-stream');
-      video.muted = true;
-      const self = this;
-
-      if (navigator.mediaDevices === undefined) {
-        navigator.mediaDevices = {};
-      }
-
-      if (navigator.mediaDevices.getUserMedia === undefined) {
-        navigator.mediaDevices.getUserMedia = (constraints) => {
-          const getUserMedia = (navigator.getUserMedia ||
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia);
-
-          if (!getUserMedia) {
-            self.onCloseVideoComponent();
-            alert('Sorry, your browser does not support the video recording.\n(In order to access the video recording, try again with one of these browsers: Chrome, Firefox, Edge, Opera.)');
-            return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
-          }
-          return new Promise((resolve, reject) => {
-            getUserMedia.call(navigator, constraints, resolve, reject);
-          });
-        };
-      }
-      navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-      .then((stream) => {
-        self.onSaveStream(stream);
-        video.controls = false;
-        video.src = window.URL.createObjectURL(stream);
-      })
-      .catch((err) => {
-        console.log(err.name + ": " + err.message);
-      });
-    }
-  }
-
-  onSaveStream(stream) {
-    this.setState({stream: stream});
-  }
-
-  onStopStream() {
-    const tracks = this.state.stream.getTracks();
-    tracks[0].stop();
-    tracks[1].stop();
-    this.onClearStream();
-  }
-  onClearStream() {
-    this.setState({stream: ''});
   }
 
 // Render Zone
