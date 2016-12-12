@@ -11,6 +11,7 @@ class Book extends React.Component {
       isNewPhrase: false,
       isDescriptionVideo: false,
       isInputVideo: false,
+      videoButtonClass: ' video-button-disabled',
     };
     this.onSourcePhraseSubmit = this.onSourcePhraseSubmit.bind(this);
     this.onTargetPhraseSubmit = this.onTargetPhraseSubmit.bind(this);
@@ -424,11 +425,13 @@ class Book extends React.Component {
     if (this.state.isEditingBook && !this.state.isInputVideo) {
       const videoButtonClass = 'video icon' + this.state.videoButtonClass;
       return (
-        <span className="inputOptions">
-          <button title="Text" className="text icon selectedInput"><img src={this.props.textAlt} alt="text"/></button>
-          <button disabled={this.state.isVideoNotAvailable} title="Video" onClick={this.onToggleInputType} className={videoButtonClass}><img src={this.props.video} alt="video"/></button>
-          <button title="Cancel" onClick={this.onCancelEditPhrase} className="close icon"><img src={this.props.close} alt="close"/></button>
-        </span>
+        <div className="inputMethod">
+          <span className="inputOptions">
+            <button title="Text" className="text icon selectedInput"><img src={this.props.textAlt} alt="text"/></button>
+            <button disabled={this.state.isVideoNotAvailable} title="Video" onClick={this.onToggleInputType} className={videoButtonClass}><img src={this.props.video} alt="video"/></button>
+            <button title="Cancel" onClick={this.onCancelEditPhrase} className="close icon"><img src={this.props.close} alt="close"/></button>
+          </span>          
+        </div>
       );     
     }
   }
@@ -495,33 +498,33 @@ class Book extends React.Component {
               { this.renderTitle() }
               { this.renderAuthor() }
               { this.renderDescription() }
-              { this.renderInputOptions() }
             </div>
           </div>
+          { this.renderInputOptions() }
           {/* <ProgressBar /> */}
           <div className="NObannerWrapper"></div>
 
           <Dictionary
-          isOwnedByCurrentUser={this.bookIsOwnedByCurrentUser()}
-          initialPhrasePairs={this.state.phrasePairs}
-          onSourcePhraseSubmit={this.onSourcePhraseSubmit}
-          onTargetPhraseSubmit={this.onTargetPhraseSubmit}
-          isEditingBook={this.state.isEditingBook}
-          menu={this.props.menu}
-          flip={this.props.flip}
-          save={this.props.save}
-          delete={this.props.delete}
-          edit={this.props.edit}
-          text={this.props.text}
-          textAlt={this.props.textAlt}
-          video={this.props.video}
-          videoAlt={this.props.videoAlt}
-          close={this.props.close}
-          closeAlt={this.props.closeAlt}
-          sourceLanguage={this.state.book.source_language}
-          targetLanguage={this.state.book.target_language}
-          author={this.state.book.user_id}
-          isNewPhrase={this.state.isNewPhrase}
+            isOwnedByCurrentUser={this.bookIsOwnedByCurrentUser()}
+            initialPhrasePairs={this.state.phrasePairs}
+            onSourcePhraseSubmit={this.onSourcePhraseSubmit}
+            onTargetPhraseSubmit={this.onTargetPhraseSubmit}
+            isEditingBook={this.state.isEditingBook}
+            menu={this.props.menu}
+            flip={this.props.flip}
+            save={this.props.save}
+            delete={this.props.delete}
+            edit={this.props.edit}
+            text={this.props.text}
+            textAlt={this.props.textAlt}
+            video={this.props.video}
+            videoAlt={this.props.videoAlt}
+            close={this.props.close}
+            closeAlt={this.props.closeAlt}
+            sourceLanguage={this.state.book.source_language}
+            targetLanguage={this.state.book.target_language}
+            author={this.state.book.user_id}
+            isNewPhrase={this.state.isNewPhrase}
           />
         </div>
       </div>
