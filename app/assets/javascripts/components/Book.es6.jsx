@@ -11,8 +11,20 @@ class Book extends React.Component {
       isNewPhrase: false,
       isDescriptionVideo: false,
       isInputVideo: false,
+      isVideoNotAvailable: true,
       videoButtonClass: ' video-button-disabled',
+      // clientId Ben
+      clientId: '463787160210-mcm71qds0opgn9cf661pptqt1hcofh3d.apps.googleusercontent.com',
+      // wikitongues
+      // clientId: '20162064407-uf2hnjg83uhaq6v3soa0bm0ngp5gmvjq.apps.googleusercontent.com',
+      // refresh token Ben
+      refreshToken: '1/vI-S3g2HImFh7nj2wV_cw8y-28lMva6O1IiTQZ7jKZQ',
+      interval: '',
+      accessToken: '',
     };
+    this.makeApiCall = this.makeApiCall.bind(this);
+    this.refreshToken = this.refreshToken.bind(this);
+    this.saveToken = this.saveToken.bind(this);
     this.onSourcePhraseSubmit = this.onSourcePhraseSubmit.bind(this);
     this.onTargetPhraseSubmit = this.onTargetPhraseSubmit.bind(this);
     this.saveNewPhrasePair = this.saveNewPhrasePair.bind(this);
@@ -40,6 +52,53 @@ class Book extends React.Component {
     this.renderFavoriteButton = this.renderFavoriteButton.bind(this);
     this.renderInputOptions = this.renderInputOptions.bind(this);
     this.renderVideoInput = this.renderVideoInput.bind(this);
+  }
+
+  componentWillMount() {
+    const makeApiCall = this.makeApiCall;
+    if (typeof gapi !== 'undefined') {
+      gapi.load('client:auth2', makeApiCall);
+    }
+    this.refreshToken();
+    const int = setInterval(this.refreshToken(), 2400000);
+    this.setState({ interval: int });
+  }
+
+  makeApiCall() {
+    const clientId = this.state.clientId;
+    const scopes = this.state.scopes;
+
+    gapi.auth2.init({
+      client_id: clientId,
+      scopes,
+    }).then(() => {
+      gapi.client.load('youtube', 'v3')
+      .then(() => {
+        this.setState({
+          isVideoNotAvailable: false,
+          videoButtonClass: ' video-button-enabled',
+        });
+      });
+    });
+  }
+
+  refreshToken() {
+    const url = 'https://www.googleapis.com/oauth2/v4/token';
+    const method = 'POST';
+    const postData = 'client_secret=31zQmZ0j4_16OXYRh_PLy5tB&grant_type=refresh_token&refresh_token=1%2FE_yN56Kk6X5Y6qv3bnackF7yH2SOfWJ7uaaMMcTtpP-GqAK8dNkv2sl1LRgG-sZl&client_id=463787160210-mcm71qds0opgn9cf661pptqt1hcofh3d.apps.googleusercontent.com';
+    const request = new XMLHttpRequest();
+    const saveToken = this.saveToken;
+    request.onload = () => {
+      const data = JSON.parse(request.responseText);
+      saveToken(data.access_token);
+    };
+    request.open(method, url);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    request.send(postData);
+  }
+
+  saveToken(accessToken) {
+    this.setState({ accessToken });
   }
 
   onSourcePhraseSubmit(sourcePhrase, isNewPhrase) {
