@@ -19,6 +19,7 @@ class Dictionary extends React.Component {
       isVideoNotAvailable: this.props.isVideoNotAvailable,
       videoButtonClass: this.props.videoButtonClass,
       accessToken: this.props.accessToken,
+      isInputVideo: false,
     };
     this.onAddNewPhraseButtonClick = this.onAddNewPhraseButtonClick.bind(this);
     this.onSourcePhraseChange = this.onSourcePhraseChange.bind(this);
@@ -68,6 +69,7 @@ class Dictionary extends React.Component {
       isVideoNotAvailable: newProps.isVideoNotAvailable,
       videoButtonClass: newProps.videoButtonClass,
       accessToken: newProps.accessToken,
+      isInputVideo: newProps.isInputVideo,
     });
   }
 
@@ -185,7 +187,7 @@ class Dictionary extends React.Component {
       isInputVideo: false,
       isVideoRecording: false,
       sourcePhrase: "",
-      targetPhrase: ""
+      targetPhrase: "",
     });
     if (this.state.stream !== '') {
       this.onStopStream();

@@ -419,6 +419,9 @@ class Book extends React.Component {
   renderDescription() {
     if (this.state.book.description) {
       if (this.state.isEditingBook) {
+        if (this.state.isInputVideo) {
+          return;
+        }
         if (this.state.book.description.startsWith('https://')) {
           return <iframe className="iframe-description" src={this.state.book.description} frameBorder="0" />;
         }
