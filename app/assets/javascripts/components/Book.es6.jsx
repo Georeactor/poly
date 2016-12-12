@@ -39,6 +39,7 @@ class Book extends React.Component {
     this.createFavorite = this.createFavorite.bind(this);
     this.toggleFavoriteBook = this.toggleFavoriteBook.bind(this);
     this.bookIsOwnedByCurrentUser = this.bookIsOwnedByCurrentUser.bind(this);
+    this.onDeleteVideoDescription = this.onDeleteVideoDescription.bind(this);
     this.renderBookMenu = this.renderBookMenu.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
     this.renderAuthor = this.renderAuthor.bind(this);
@@ -266,6 +267,21 @@ class Book extends React.Component {
     }
   }
 
+  onDeleteVideoDescription() {
+    bootbox.confirm({
+      message: 'Are you sure you want to delete the video description?',
+      closeButton: false,
+      callback: () => {
+        const book = this.state.book;
+        book.description = '';
+        this.setState({
+          book,
+          isDescriptionVideo: false,
+        });
+      },
+    });
+  }
+
   renderBookMenu() {
     if (this.bookIsOwnedByCurrentUser()) {
       if (this.state.isEditingBook) {
@@ -391,6 +407,9 @@ class Book extends React.Component {
   renderDescription() {
     if (this.state.book.description) {
       if (this.state.isEditingBook) {
+        if (this.state.book.description.startsWith('https://')) {
+          return <iframe className="iframe" src={this.state.book.description} frameBorder="0" />;
+        }
         return (
           <textarea
             disabled={this.state.isDescriptionVideo}
@@ -481,6 +500,15 @@ class Book extends React.Component {
   }
 
   renderInputOptions() {
+    if (this.state.isDescriptionVideo) {
+      return (
+        <div className="inputMethod">
+          <span className="inputOptions">
+            <button title="Delete" onClick={this.onDeleteVideoDescription} className="close icon"><img src={this.props.close} alt="close"/></button>
+          </span>          
+        </div>
+      );
+    }
     if (this.state.isEditingBook && !this.state.isInputVideo) {
       const videoButtonClass = 'video icon' + this.state.videoButtonClass;
       return (
