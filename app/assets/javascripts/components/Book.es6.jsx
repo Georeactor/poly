@@ -383,7 +383,7 @@ class Book extends React.Component {
 
   renderTruncatedDescription() {
     if (this.state.book.description.startsWith('https://')) {
-      return <iframe className="iframe" src={this.state.book.description} frameBorder="0" />;
+      return <iframe className="iframe-description" src={this.state.book.description} frameBorder="0" />;
     }
     if (this.state.book.description.length >= 132) {
       if (this.state.isDescriptionTruncated) {
@@ -408,7 +408,7 @@ class Book extends React.Component {
     if (this.state.book.description) {
       if (this.state.isEditingBook) {
         if (this.state.book.description.startsWith('https://')) {
-          return <iframe className="iframe" src={this.state.book.description} frameBorder="0" />;
+          return <iframe className="iframe-description" src={this.state.book.description} frameBorder="0" />;
         }
         return (
           <textarea
