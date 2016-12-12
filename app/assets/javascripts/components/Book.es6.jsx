@@ -10,6 +10,7 @@ class Book extends React.Component {
       errors: [],
       isNewPhrase: false,
       isDescriptionVideo: false,
+      isInputVideo: false,
     };
     this.onSourcePhraseSubmit = this.onSourcePhraseSubmit.bind(this);
     this.onTargetPhraseSubmit = this.onTargetPhraseSubmit.bind(this);
@@ -36,6 +37,8 @@ class Book extends React.Component {
     this.favoriteImage = this.favoriteImage.bind(this);
     this.isFavoriteBook = this.isFavoriteBook.bind(this);
     this.renderFavoriteButton = this.renderFavoriteButton.bind(this);
+    this.renderInputOptions = this.renderInputOptions.bind(this);
+    this.renderVideoInput = this.renderVideoInput.bind(this);
   }
 
   onSourcePhraseSubmit(sourcePhrase, isNewPhrase) {
@@ -417,6 +420,54 @@ class Book extends React.Component {
     }
   }
 
+  renderInputOptions() {
+    if (this.state.isEditingBook && !this.state.isInputVideo) {
+      const videoButtonClass = 'video icon' + this.state.videoButtonClass;
+      return (
+        <span className="inputOptions">
+          <button title="Text" className="text icon selectedInput"><img src={this.props.textAlt} alt="text"/></button>
+          <button disabled={this.state.isVideoNotAvailable} title="Video" onClick={this.onToggleInputType} className={videoButtonClass}><img src={this.props.video} alt="video"/></button>
+          <button title="Cancel" onClick={this.onCancelEditPhrase} className="close icon"><img src={this.props.close} alt="close"/></button>
+        </span>
+      );     
+    }
+  }
+
+  renderVideoInput() {
+    if (this.state.isInputVideo) {
+      return (
+        <div ref="video">
+          <Video
+            onRenderVideoInput={this.onRenderVideoInput}
+            renderRecordButton={this.renderRecordButton}
+            onCancelEditPhrase={this.onCancelEditPhrase}
+            onCloseVideoComponent={this.onCloseVideoComponent}
+            onStartRecordingClick={this.onStartRecordingClick}
+            onStopRecordingClick={this.onStopRecordingClick}
+            onSourceVideoSubmit={this.onSourceVideoSubmit}
+            onTargetVideoSubmit={this.onTargetVideoSubmit}
+            onToggleInputType={this.onToggleInputType}
+            onClearStream={this.onClearStream}
+            onToggleGAPILoaded={this.onToggleGAPILoaded}
+            closeAlt={this.props.closeAlt}
+            textAlt={this.props.textAlt}
+            isVideoRecording={this.state.isVideoRecording}
+            isInputVideo={this.state.isInputVideo}
+            onSaveStream={this.onSaveStream}
+            onStopStream={this.onStopStream}
+            mediaConstraints={this.state.mediaConstraints}
+            stream={this.state.stream}
+            isTargetInputActive={this.state.isTargetInputActive}
+            sourceLanguage={this.props.sourceLanguage}
+            targetLanguage={this.props.targetLanguage}
+            author={this.props.author}
+            accessToken={this.state.accessToken}
+          />
+        </div>
+      );
+    }
+  }
+
   render() {
     return (
       <div className="container">
@@ -444,6 +495,7 @@ class Book extends React.Component {
               { this.renderTitle() }
               { this.renderAuthor() }
               { this.renderDescription() }
+              { this.renderInputOptions() }
             </div>
           </div>
           {/* <ProgressBar /> */}
