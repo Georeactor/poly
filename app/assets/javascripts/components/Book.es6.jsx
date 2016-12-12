@@ -40,6 +40,7 @@ class Book extends React.Component {
     this.toggleFavoriteBook = this.toggleFavoriteBook.bind(this);
     this.bookIsOwnedByCurrentUser = this.bookIsOwnedByCurrentUser.bind(this);
     this.onDeleteVideoDescription = this.onDeleteVideoDescription.bind(this);
+    this.onToggleInputType = this.onToggleInputType.bind(this);
     this.renderBookMenu = this.renderBookMenu.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
     this.renderAuthor = this.renderAuthor.bind(this);
@@ -287,6 +288,10 @@ class Book extends React.Component {
         });
       },
     });
+  }
+
+  onToggleInputType() {
+    this.setState({ isInputVideo: !this.state.isInputVideo });
   }
 
   renderBookMenu() {
@@ -595,6 +600,7 @@ class Book extends React.Component {
             </div>
           </div>
           { this.renderInputOptions() }
+          { this.renderVideoInput() }
           {/* <ProgressBar /> */}
           <div className="NObannerWrapper"></div>
 
