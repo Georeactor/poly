@@ -137,6 +137,9 @@ class Book extends React.Component {
   }
 
   toggleEditingBookState() {
+    if (this.state.book.description.startsWith('https://')) {
+      this.setState({ isDescriptionVideo: true });
+    }
     this.setState({ isEditingBook: true });
   }
 
@@ -212,7 +215,7 @@ class Book extends React.Component {
               <img src={this.props.saveAlt} alt="Save" />
             </button>
             <button title="Cancel" onClick={this.cancelEditingBookState} className="close icon">
-              <img src={this.props.closeAlt}/>
+              <img src={this.props.closeAlt} />
             </button>
           </div>
         );
@@ -220,13 +223,13 @@ class Book extends React.Component {
         return (
           <div className="menu">
             <button title="Menu" className="more icon">
-              <img src={this.props.menuAlt}/>
+              <img src={this.props.menuAlt} />
             </button>
             <button title="Edit" onClick={this.toggleEditingBookState} className="icon" tabIndex="-1">
-              <img src={this.props.editAlt}/>
+              <img src={this.props.editAlt} />
             </button>
             <button title="Delete" onClick={this.onDeleteBookClick} className="icon" tabIndex="-1">
-              <img src={this.props.deleteAlt}/>
+              <img src={this.props.deleteAlt} />
             </button>
           </div>
         );
@@ -327,6 +330,7 @@ class Book extends React.Component {
       if (this.state.isEditingBook) {
         return (
           <textarea
+            disabled={this.state.isDescriptionVideo}
             rows="4"
             className="description new isEditing"
             name="description"
