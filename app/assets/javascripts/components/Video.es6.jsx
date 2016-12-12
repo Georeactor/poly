@@ -256,8 +256,10 @@ Video = React.createClass( {
     this.props.onToggleInputType();
     if (this.props.isTargetInputActive) {
       this.props.onTargetVideoSubmit(this.state.youtubeVideoEmbed);
-    } else {
+    } else if (this.props.isPhraseInputActive) {
       this.props.onSourceVideoSubmit(this.state.youtubeVideoEmbed);
+    } else {
+      this.props.onSaveVideoDescription(this.state.youtubeVideoEmbed);
     }
   },
 

@@ -31,13 +31,6 @@ class Dictionary extends React.Component {
     this.onDeletePhrasePair = this.onDeletePhrasePair.bind(this);
     this.onCancelEditPhrase = this.onCancelEditPhrase.bind(this);
     this.onToggleInputType = this.onToggleInputType.bind(this);
-    this.onCloseVideoComponent = this.onCloseVideoComponent.bind(this);
-    this.onStopRecordingClick = this.onStopRecordingClick.bind(this);
-    this.onStartRecordingClick = this.onStartRecordingClick.bind(this);
-    this.onRenderVideoInput = this.onRenderVideoInput.bind(this);
-    this.onSaveStream = this.onSaveStream.bind(this);
-    this.onStopStream = this.onStopStream.bind(this);
-    this.onClearStream = this.onClearStream.bind(this);
     this.renderPhrasePairs = this.renderPhrasePairs.bind(this);
     this.renderPreSourcePhrase = this.renderPreSourcePhrase.bind(this);
     this.renderCreateNewPhraseButton = this.renderCreateNewPhraseButton.bind(this);

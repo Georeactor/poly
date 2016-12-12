@@ -39,8 +39,16 @@ class Book extends React.Component {
     this.createFavorite = this.createFavorite.bind(this);
     this.toggleFavoriteBook = this.toggleFavoriteBook.bind(this);
     this.bookIsOwnedByCurrentUser = this.bookIsOwnedByCurrentUser.bind(this);
+    this.onSaveVideoDescription = this.onSaveVideoDescription.bind(this);
     this.onDeleteVideoDescription = this.onDeleteVideoDescription.bind(this);
     this.onToggleInputType = this.onToggleInputType.bind(this);
+    this.onCloseVideoComponent = this.onCloseVideoComponent.bind(this);
+    this.onStopRecordingClick = this.onStopRecordingClick.bind(this);
+    this.onStartRecordingClick = this.onStartRecordingClick.bind(this);
+    this.onRenderVideoInput = this.onRenderVideoInput.bind(this);
+    this.onSaveStream = this.onSaveStream.bind(this);
+    this.onStopStream = this.onStopStream.bind(this);
+    this.onClearStream = this.onClearStream.bind(this);
     this.renderBookMenu = this.renderBookMenu.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
     this.renderAuthor = this.renderAuthor.bind(this);
@@ -209,7 +217,7 @@ class Book extends React.Component {
   }
 
   toggleEditingBookState() {
-    if (this.state.book.description.startsWith('https://')) {
+    if (this.state.book.description.startsWith('http://')) {
       this.setState({ isDescriptionVideo: true });
     }
     this.setState({ isEditingBook: true });
@@ -275,6 +283,16 @@ class Book extends React.Component {
     }
   }
 
+  onSaveVideoDescription(description) {
+    const book = this.state.book;
+    book.description = description;
+    this.setState({
+      book,
+      isDescriptionVideo: true,
+    });
+    this.onSaveBookClick();
+  }
+
   onDeleteVideoDescription() {
     bootbox.confirm({
       message: 'Are you sure you want to delete the video description?',
@@ -299,7 +317,7 @@ class Book extends React.Component {
   onCloseVideoComponent() {
     this.setState({
       isVideoRecording: false,
-      isInputVideo: false
+      isInputVideo: false,
     });
     if (this.state.stream !== '') {
       this.onStopStream();
@@ -466,7 +484,7 @@ class Book extends React.Component {
   }
 
   renderTruncatedDescription() {
-    if (this.state.book.description.startsWith('https://')) {
+    if (this.state.book.description.startsWith('http://')) {
       return <iframe className="iframe-description" src={this.state.book.description} frameBorder="0" />;
     }
     if (this.state.book.description.length >= 132) {
@@ -494,7 +512,7 @@ class Book extends React.Component {
         if (this.state.isInputVideo) {
           return;
         }
-        if (this.state.book.description.startsWith('https://')) {
+        if (this.state.book.description.startsWith('http://')) {
           return <iframe className="iframe-description" src={this.state.book.description} frameBorder="0" />;
         }
         return (
@@ -510,7 +528,7 @@ class Book extends React.Component {
       }
       return <span>{this.renderTruncatedDescription()}</span>;
     }
-    if (this.state.isEditingBook) {
+    if (this.state.isEditingBook && !this.state.isInputVideo) {
       return (
         <textarea
           rows="5"
@@ -587,26 +605,28 @@ class Book extends React.Component {
   }
 
   renderInputOptions() {
-    if (this.state.isDescriptionVideo) {
-      return (
-        <div className="inputMethod">
-          <span className="inputOptions">
-            <button title="Delete" onClick={this.onDeleteVideoDescription} className="close icon"><img src={this.props.close} alt="close"/></button>
-          </span>          
-        </div>
-      );
-    }
-    if (this.state.isEditingBook && !this.state.isInputVideo) {
-      const videoButtonClass = 'video icon' + this.state.videoButtonClass;
-      return (
-        <div className="inputMethod">
-          <span className="inputOptions">
-            <button title="Text" className="text icon selectedInput"><img src={this.props.textAlt} alt="text"/></button>
-            <button disabled={this.state.isVideoNotAvailable} title="Video" onClick={this.onToggleInputType} className={videoButtonClass}><img src={this.props.video} alt="video"/></button>
-            <button title="Cancel" onClick={this.onCancelEditPhrase} className="close icon"><img src={this.props.close} alt="close"/></button>
-          </span>          
-        </div>
-      );     
+    if (this.state.isEditingBook) {
+      if (this.state.isDescriptionVideo) {
+        return (
+          <div className="inputMethod">
+            <span className="inputOptions">
+              <button title="Delete" onClick={this.onDeleteVideoDescription} className="close icon"><img src={this.props.close} alt="close"/></button>
+            </span>          
+          </div>
+        );
+      }
+      if (!this.state.isInputVideo) {
+        const videoButtonClass = 'video icon' + this.state.videoButtonClass;
+        return (
+          <div className="inputMethod">
+            <span className="inputOptions">
+              <button title="Text" className="text icon selectedInput"><img src={this.props.textAlt} alt="text"/></button>
+              <button disabled={this.state.isVideoNotAvailable} title="Video" onClick={this.onToggleInputType} className={videoButtonClass}><img src={this.props.video} alt="video"/></button>
+              <button title="Cancel" onClick={this.onCancelEditPhrase} className="close icon"><img src={this.props.close} alt="close"/></button>
+            </span>          
+          </div>
+        );         
+      }
     }
   }
 
@@ -626,6 +646,7 @@ class Book extends React.Component {
             onToggleInputType={this.onToggleInputType}
             onClearStream={this.onClearStream}
             onToggleGAPILoaded={this.onToggleGAPILoaded}
+            onSaveVideoDescription={this.onSaveVideoDescription}
             closeAlt={this.props.closeAlt}
             textAlt={this.props.textAlt}
             isVideoRecording={this.state.isVideoRecording}
@@ -703,6 +724,11 @@ class Book extends React.Component {
             isVideoNotAvailable={this.state.isVideoNotAvailable}
             videoButtonClass={this.state.videoButtonClass}
             accessToken={this.state.accessToken}
+            onRenderVideoInput={this.onRenderVideoInput}
+            onCloseVideoComponent={this.onCloseVideoComponent}
+            onStartRecordingClick={this.onStartRecordingClick}
+            onStopRecordingClick={this.onStopRecordingClick}
+            onClearStream={this.onClearStream}
           />
         </div>
       </div>
