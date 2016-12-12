@@ -11,11 +11,7 @@ class Dictionary extends React.Component {
       phrasePairs: this.props.initialPhrasePairs,
       sourcePhrase: '',
       targetPhrase: '',
-      stream: '',
-
-      scopes: [
-        'https://www.googleapis.com/auth/youtube',
-      ],
+      stream: this.props.stream,
       isVideoNotAvailable: this.props.isVideoNotAvailable,
       videoButtonClass: this.props.videoButtonClass,
       accessToken: this.props.accessToken,
@@ -63,6 +59,7 @@ class Dictionary extends React.Component {
       videoButtonClass: newProps.videoButtonClass,
       accessToken: newProps.accessToken,
       isInputVideo: newProps.isInputVideo,
+      stream: newProps.stream,
     });
   }
 
@@ -334,23 +331,23 @@ class Dictionary extends React.Component {
       return (
         <div ref="video">
           <Video
-            onRenderVideoInput={this.onRenderVideoInput}
+            onRenderVideoInput={this.props.onRenderVideoInput}
             renderRecordButton={this.renderRecordButton}
             onCancelEditPhrase={this.onCancelEditPhrase}
-            onCloseVideoComponent={this.onCloseVideoComponent}
-            onStartRecordingClick={this.onStartRecordingClick}
-            onStopRecordingClick={this.onStopRecordingClick}
+            onCloseVideoComponent={this.props.onCloseVideoComponent}
+            onStartRecordingClick={this.props.onStartRecordingClick}
+            onStopRecordingClick={this.props.onStopRecordingClick}
             onSourceVideoSubmit={this.onSourceVideoSubmit}
             onTargetVideoSubmit={this.onTargetVideoSubmit}
             onToggleInputType={this.onToggleInputType}
-            onClearStream={this.onClearStream}
+            onClearStream={this.props.onClearStream}
             onToggleGAPILoaded={this.onToggleGAPILoaded}
             closeAlt={this.props.closeAlt}
             textAlt={this.props.textAlt}
             isVideoRecording={this.state.isVideoRecording}
             isInputVideo={this.state.isInputVideo}
-            onSaveStream={this.onSaveStream}
-            onStopStream={this.onStopStream}
+            onSaveStream={this.props.onSaveStream}
+            onStopStream={this.props.onStopStream}
             mediaConstraints={this.state.mediaConstraints}
             stream={this.state.stream}
             isTargetInputActive={this.state.isTargetInputActive}

@@ -19,8 +19,12 @@ class Book extends React.Component {
       // clientId: '20162064407-uf2hnjg83uhaq6v3soa0bm0ngp5gmvjq.apps.googleusercontent.com',
       // refresh token Ben
       refreshToken: '1/vI-S3g2HImFh7nj2wV_cw8y-28lMva6O1IiTQZ7jKZQ',
+      scopes: [
+        'https://www.googleapis.com/auth/youtube',
+      ],
       interval: '',
       accessToken: '',
+      stream: '',
     };
     this.makeApiCall = this.makeApiCall.bind(this);
     this.refreshToken = this.refreshToken.bind(this);
@@ -729,6 +733,7 @@ class Book extends React.Component {
             onStartRecordingClick={this.onStartRecordingClick}
             onStopRecordingClick={this.onStopRecordingClick}
             onClearStream={this.onClearStream}
+            stream={this.state.stream}
           />
         </div>
       </div>
