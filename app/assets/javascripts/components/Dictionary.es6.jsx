@@ -12,23 +12,14 @@ class Dictionary extends React.Component {
       sourcePhrase: '',
       targetPhrase: '',
       stream: '',
-      // clientId Ben
-      clientId: '463787160210-mcm71qds0opgn9cf661pptqt1hcofh3d.apps.googleusercontent.com',
-      // wikitongues
-      // clientId: '20162064407-uf2hnjg83uhaq6v3soa0bm0ngp5gmvjq.apps.googleusercontent.com',
+
       scopes: [
         'https://www.googleapis.com/auth/youtube',
       ],
-      // refresh token Ben
-      refreshToken: '1/vI-S3g2HImFh7nj2wV_cw8y-28lMva6O1IiTQZ7jKZQ',
-      interval: '',
-      accessToken: '',
-      isVideoNotAvailable: true,
-      videoButtonClass: ' video-button-disabled',
+      isVideoNotAvailable: this.props.isVideoNotAvailable,
+      videoButtonClass: this.props.videoButtonClass,
+      accessToken: this.props.accessToken,
     };
-    this.makeApiCall = this.makeApiCall.bind(this);
-    this.refreshToken = this.refreshToken.bind(this);
-    this.saveToken = this.saveToken.bind(this);
     this.onAddNewPhraseButtonClick = this.onAddNewPhraseButtonClick.bind(this);
     this.onSourcePhraseChange = this.onSourcePhraseChange.bind(this);
     this.onSourcePhraseSubmit = this.onSourcePhraseSubmit.bind(this);
@@ -56,16 +47,6 @@ class Dictionary extends React.Component {
     this.renderInputMethod = this.renderInputMethod.bind(this);
   }
 
-  componentWillMount() {
-    const makeApiCall = this.makeApiCall;
-    if (typeof gapi !== 'undefined') {
-      gapi.load('client:auth2', makeApiCall);
-    }
-    this.refreshToken();
-    const int = setInterval(this.refreshToken(), 2400000);
-    this.setState({ interval: int });
-  }
-
   componentDidUpdate() {
     if (this.refs.sourceInput) {
       this.refs.sourceInput.blur();
@@ -82,45 +63,15 @@ class Dictionary extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({ phrasePairs: newProps.initialPhrasePairs });
-  }
-
-  makeApiCall() {
-    const clientId = this.state.clientId;
-    const scopes = this.state.scopes;
-
-    gapi.auth2.init({
-      client_id: clientId,
-      scopes,
-    }).then(() => {
-      gapi.client.load('youtube', 'v3')
-      .then(() => {
-        this.setState({
-          isVideoNotAvailable: false,
-          videoButtonClass: ' video-button-enabled',
-        });
-      });
+    this.setState({ 
+      phrasePairs: newProps.initialPhrasePairs,
+      isVideoNotAvailable: newProps.isVideoNotAvailable,
+      videoButtonClass: newProps.videoButtonClass,
+      accessToken: newProps.accessToken,
     });
   }
 
-  refreshToken() {
-    const url = 'https://www.googleapis.com/oauth2/v4/token';
-    const method = 'POST';
-    const postData = 'client_secret=31zQmZ0j4_16OXYRh_PLy5tB&grant_type=refresh_token&refresh_token=1%2FE_yN56Kk6X5Y6qv3bnackF7yH2SOfWJ7uaaMMcTtpP-GqAK8dNkv2sl1LRgG-sZl&client_id=463787160210-mcm71qds0opgn9cf661pptqt1hcofh3d.apps.googleusercontent.com';
-    const request = new XMLHttpRequest();
-    const saveToken = this.saveToken;
-    request.onload = () => {
-      const data = JSON.parse(request.responseText);
-      saveToken(data.access_token);
-    };
-    request.open(method, url);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    request.send(postData);
-  }
 
-  saveToken(accessToken) {
-    this.setState({ accessToken });
-  }
 
   onAddNewPhraseButtonClick() {
     this.setState({ isPhraseInputActive: !this.state.isPhraseInputActive });
