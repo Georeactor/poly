@@ -59,6 +59,13 @@ class Book extends React.Component {
     const makeApiCall = this.makeApiCall;
     if (typeof gapi !== 'undefined') {
       gapi.load('client:auth2', makeApiCall);
+
+      if (gapi.loaded_0 == null) {
+        this.setState({
+          isVideoNotAvailable: false,
+          videoButtonClass: ' video-button-enabled',
+        });
+      }
     }
     this.refreshToken();
     const int = setInterval(this.refreshToken(), 2400000);
