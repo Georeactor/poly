@@ -87,6 +87,10 @@ class Book extends React.Component {
     this.setState({ interval: int });
   }
 
+  componentWillUnmount() {
+    clearInterval(this.state.interval);
+  }
+
   makeApiCall() {
     const clientId = this.state.clientId;
     const scopes = this.state.scopes;
