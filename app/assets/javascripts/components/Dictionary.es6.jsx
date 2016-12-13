@@ -11,12 +11,12 @@ class Dictionary extends React.Component {
       phrasePairs: this.props.initialPhrasePairs,
       sourcePhrase: '',
       targetPhrase: '',
-      stream: this.props.stream,
+      stream: '',
       isVideoNotAvailable: this.props.isVideoNotAvailable,
       videoButtonClass: this.props.videoButtonClass,
       accessToken: this.props.accessToken,
-      isInputVideo: false,
     };
+    this.onToggleInputType = this.onToggleInputType.bind(this);
     this.onAddNewPhraseButtonClick = this.onAddNewPhraseButtonClick.bind(this);
     this.onSourcePhraseChange = this.onSourcePhraseChange.bind(this);
     this.onSourcePhraseSubmit = this.onSourcePhraseSubmit.bind(this);
@@ -26,7 +26,13 @@ class Dictionary extends React.Component {
     this.onTargetVideoSubmit = this.onTargetVideoSubmit.bind(this);
     this.onDeletePhrasePair = this.onDeletePhrasePair.bind(this);
     this.onCancelEditPhrase = this.onCancelEditPhrase.bind(this);
-    this.onToggleInputType = this.onToggleInputType.bind(this);
+    this.onCloseVideoComponent = this.onCloseVideoComponent.bind(this);
+    this.onStopRecordingClick = this.onStopRecordingClick.bind(this);
+    this.onStartRecordingClick = this.onStartRecordingClick.bind(this);
+    this.onRenderVideoInput = this.onRenderVideoInput.bind(this);
+    this.onSaveStream = this.onSaveStream.bind(this);
+    this.onStopStream = this.onStopStream.bind(this);
+    this.onClearStream = this.onClearStream.bind(this);
     this.renderPhrasePairs = this.renderPhrasePairs.bind(this);
     this.renderPreSourcePhrase = this.renderPreSourcePhrase.bind(this);
     this.renderCreateNewPhraseButton = this.renderCreateNewPhraseButton.bind(this);
@@ -58,12 +64,12 @@ class Dictionary extends React.Component {
       isVideoNotAvailable: newProps.isVideoNotAvailable,
       videoButtonClass: newProps.videoButtonClass,
       accessToken: newProps.accessToken,
-      isInputVideo: newProps.isInputVideo,
-      stream: newProps.stream,
     });
   }
 
-
+  onToggleInputType() {
+    this.setState({ isInputVideo: !this.state.isInputVideo });
+  }
 
   onAddNewPhraseButtonClick() {
     this.setState({ isPhraseInputActive: !this.state.isPhraseInputActive });
@@ -174,18 +180,86 @@ class Dictionary extends React.Component {
   onCancelEditPhrase() {
     this.setState({
       isPhraseInputActive: false,
-      isInputVideo: false,
       isVideoRecording: false,
       sourcePhrase: "",
       targetPhrase: "",
+    });
+    this.props.onToggleInputType();
+    if (this.state.stream !== '') {
+      this.onStopStream();
+    }
+  }
+
+  // video zone
+
+  onCloseVideoComponent() {
+    this.setState({
+      isVideoRecording: false,
+      isInputVideo: false,
     });
     if (this.state.stream !== '') {
       this.onStopStream();
     }
   }
 
-  onToggleInputType() {
-    this.setState({ isInputVideo: !this.state.isInputVideo });
+  onStopRecordingClick() {
+    this.setState({ isVideoRecording: !this.state.isVideoRecording });
+  }
+
+  onStartRecordingClick() {
+    this.setState({ isVideoRecording: !this.state.isVideoRecording });
+  }
+
+  onRenderVideoInput() {
+    if (this.state.isInputVideo) {
+      const video = document.getElementById('camera-stream');
+      video.muted = true;
+      const self = this;
+
+      if (navigator.mediaDevices === undefined) {
+        navigator.mediaDevices = {};
+      }
+
+      if (navigator.mediaDevices.getUserMedia === undefined) {
+        navigator.mediaDevices.getUserMedia = (constraints) => {
+          const getUserMedia = (navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia);
+
+          if (!getUserMedia) {
+            self.onCloseVideoComponent();
+            alert('Sorry, your browser does not support the video recording.\n(In order to access the video recording, try again with one of these browsers: Chrome, Firefox, Edge, Opera.)');
+            return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+          }
+          return new Promise((resolve, reject) => {
+            getUserMedia.call(navigator, constraints, resolve, reject);
+          });
+        };
+      }
+      navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+      .then((stream) => {
+        self.onSaveStream(stream);
+        video.controls = false;
+        video.src = window.URL.createObjectURL(stream);
+      })
+      .catch((err) => {
+        console.log(err.name + ": " + err.message);
+      });
+    }
+  }
+
+  onSaveStream(stream) {
+    this.setState({ stream: stream });
+  }
+
+  onStopStream() {
+    const tracks = this.state.stream.getTracks();
+    tracks[0].stop();
+    tracks[1].stop();
+    this.onClearStream();
+  }
+  onClearStream() {
+    this.setState({stream: ''});
   }
 
 // Render Zone
@@ -331,26 +405,25 @@ class Dictionary extends React.Component {
       return (
         <div ref="video">
           <Video
-            onRenderVideoInput={this.props.onRenderVideoInput}
-            renderRecordButton={this.renderRecordButton}
+            onRenderVideoInput={this.onRenderVideoInput}
             onCancelEditPhrase={this.onCancelEditPhrase}
-            onCloseVideoComponent={this.props.onCloseVideoComponent}
-            onStartRecordingClick={this.props.onStartRecordingClick}
-            onStopRecordingClick={this.props.onStopRecordingClick}
+            onCloseVideoComponent={this.onCloseVideoComponent}
+            onStartRecordingClick={this.onStartRecordingClick}
+            onStopRecordingClick={this.onStopRecordingClick}
             onSourceVideoSubmit={this.onSourceVideoSubmit}
             onTargetVideoSubmit={this.onTargetVideoSubmit}
             onToggleInputType={this.onToggleInputType}
-            onClearStream={this.props.onClearStream}
-            onToggleGAPILoaded={this.onToggleGAPILoaded}
+            onClearStream={this.onClearStream}
             closeAlt={this.props.closeAlt}
             textAlt={this.props.textAlt}
             isVideoRecording={this.state.isVideoRecording}
             isInputVideo={this.state.isInputVideo}
-            onSaveStream={this.props.onSaveStream}
-            onStopStream={this.props.onStopStream}
+            onSaveStream={this.onSaveStream}
+            onStopStream={this.onStopStream}
             mediaConstraints={this.state.mediaConstraints}
             stream={this.state.stream}
             isTargetInputActive={this.state.isTargetInputActive}
+            isPhraseInputActive={this.state.isPhraseInputActive}
             sourceLanguage={this.props.sourceLanguage}
             targetLanguage={this.props.targetLanguage}
             author={this.props.author}

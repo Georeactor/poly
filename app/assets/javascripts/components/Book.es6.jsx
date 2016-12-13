@@ -25,6 +25,7 @@ class Book extends React.Component {
       interval: '',
       accessToken: '',
       stream: '',
+      isVideoRecording: false,
     };
     this.makeApiCall = this.makeApiCall.bind(this);
     this.refreshToken = this.refreshToken.bind(this);
@@ -53,6 +54,7 @@ class Book extends React.Component {
     this.onSaveStream = this.onSaveStream.bind(this);
     this.onStopStream = this.onStopStream.bind(this);
     this.onClearStream = this.onClearStream.bind(this);
+    this.handleDescriptionVideoClick = this.handleDescriptionVideoClick.bind(this);
     this.renderBookMenu = this.renderBookMenu.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
     this.renderAuthor = this.renderAuthor.bind(this);
@@ -375,7 +377,7 @@ class Book extends React.Component {
   }
 
   onSaveStream(stream) {
-    this.setState({stream: stream});
+    this.setState({ stream: stream });
   }
 
   onStopStream() {
@@ -386,6 +388,11 @@ class Book extends React.Component {
   }
   onClearStream() {
     this.setState({stream: ''});
+  }
+
+  handleDescriptionVideoClick() {
+    this.setState({ isDescriptionVideo: true });
+    this.onToggleInputType();
   }
 
   renderBookMenu() {
@@ -625,7 +632,7 @@ class Book extends React.Component {
           <div className="inputMethod">
             <span className="inputOptions">
               <button title="Text" className="text icon selectedInput"><img src={this.props.textAlt} alt="text"/></button>
-              <button disabled={this.state.isVideoNotAvailable} title="Video" onClick={this.onToggleInputType} className={videoButtonClass}><img src={this.props.video} alt="video"/></button>
+              <button disabled={this.state.isVideoNotAvailable} title="Video" onClick={this.handleDescriptionVideoClick} className={videoButtonClass}><img src={this.props.video} alt="video"/></button>
               <button title="Cancel" onClick={this.onCancelEditPhrase} className="close icon"><img src={this.props.close} alt="close"/></button>
             </span>          
           </div>
@@ -635,31 +642,26 @@ class Book extends React.Component {
   }
 
   renderVideoInput() {
-    if (this.state.isInputVideo) {
+    if (this.state.isInputVideo && this.state.isDescriptionVideo) {
       return (
         <div ref="video">
           <Video
             onRenderVideoInput={this.onRenderVideoInput}
-            renderRecordButton={this.renderRecordButton}
             onCancelEditPhrase={this.onCancelEditPhrase}
             onCloseVideoComponent={this.onCloseVideoComponent}
             onStartRecordingClick={this.onStartRecordingClick}
             onStopRecordingClick={this.onStopRecordingClick}
-            onSourceVideoSubmit={this.onSourceVideoSubmit}
-            onTargetVideoSubmit={this.onTargetVideoSubmit}
             onToggleInputType={this.onToggleInputType}
+            onSaveStream={this.onSaveStream}
+            onStopStream={this.onStopStream}
             onClearStream={this.onClearStream}
-            onToggleGAPILoaded={this.onToggleGAPILoaded}
             onSaveVideoDescription={this.onSaveVideoDescription}
             closeAlt={this.props.closeAlt}
             textAlt={this.props.textAlt}
             isVideoRecording={this.state.isVideoRecording}
             isInputVideo={this.state.isInputVideo}
-            onSaveStream={this.onSaveStream}
-            onStopStream={this.onStopStream}
             mediaConstraints={this.state.mediaConstraints}
             stream={this.state.stream}
-            isTargetInputActive={this.state.isTargetInputActive}
             sourceLanguage={this.props.sourceLanguage}
             targetLanguage={this.props.targetLanguage}
             author={this.props.author}
@@ -728,12 +730,6 @@ class Book extends React.Component {
             isVideoNotAvailable={this.state.isVideoNotAvailable}
             videoButtonClass={this.state.videoButtonClass}
             accessToken={this.state.accessToken}
-            onRenderVideoInput={this.onRenderVideoInput}
-            onCloseVideoComponent={this.onCloseVideoComponent}
-            onStartRecordingClick={this.onStartRecordingClick}
-            onStopRecordingClick={this.onStopRecordingClick}
-            onClearStream={this.onClearStream}
-            stream={this.state.stream}
           />
         </div>
       </div>
