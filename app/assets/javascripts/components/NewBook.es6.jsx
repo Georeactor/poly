@@ -10,6 +10,7 @@ class NewBook extends React.Component {
       isDescriptionVideo: false,
       isInputVideo: false,
       isVideoNotAvailable: true,
+      isVideoRecording: false,
       videoButtonClass: ' video-button-disabled',
       // clientId Ben
       clientId: '463787160210-mcm71qds0opgn9cf661pptqt1hcofh3d.apps.googleusercontent.com',
@@ -39,6 +40,7 @@ class NewBook extends React.Component {
     this.onSaveStream = this.onSaveStream.bind(this);
     this.onStopStream = this.onStopStream.bind(this);
     this.onClearStream = this.onClearStream.bind(this);
+    this.onSaveVideoDescription = this.onSaveVideoDescription.bind(this);
   }
 
   componentWillMount() {
@@ -222,6 +224,10 @@ class NewBook extends React.Component {
         closeButton: false,
       });
     }
+  }
+
+  onSaveVideoDescription(description) {
+    this.setState({ description });
   }
 
   renderInputOptions() {
