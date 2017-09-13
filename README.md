@@ -1,6 +1,8 @@
 <!-- Refer to Awesome Readme for tips on improving the readme file: https://github.com/matiassingers/awesome-readme -->
 # Poly
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Georeactor/wikitongues.svg)](https://greenkeeper.io/)
+
 ![Poly](https://raw.githubusercontent.com/wikitongues/poly/master/repo/polyPoster.jpg)
 
 > Poly is open source, modern software to share and learn every language in the world.
